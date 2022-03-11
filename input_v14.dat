@@ -1,0 +1,22 @@
+'EK_D3N16M8S24T0290P020_1.dat'	!config input
+'EK_D3N16M8S24T0290P020_2.txt'	!data output
+'EK_D3N16M8S24T0290P020_phase_2.txt'   !phase output
+'EK_D3N16M8S24T0290P020_cor_dec_2.txt'   !cor_dec output
+'EK_D3N16M8S24T0290P020_cor_con_2.txt'   !cor_con output
+'EK_D3N16M8S24T0290P020_cor_mix_2.txt'   !cor_mix output
+'EK_D3N16M8S24T0290P020_2.dat'	!config output
+1		!InicConfig; 0 -> new config, 1 -> old config
+1		!nseed; iniconfig=0 or nseed =0 -> mersenne_seed is used
+0.29d0		!temperature 
+1		!ncorrelator; 1 -> calculate correlator of P and P^dag
+1		!nphase; 1 -> write polyakov line phases in "phase output"
+50		!number of sweeps
+5		!NoSkip
+200		!Ntau
+0.002d0	!Dtau for U
+0.001d0	!Dtau for alpha
+1d7	!Coeff for fixing P
+0.4d0	!fix P_{dec} to this value (P_fix)
+0.005d0	!width of P (P_fix +/- this value)
+1000d0	!g_coeff_alpha.
+4385	!mersenne_seed
