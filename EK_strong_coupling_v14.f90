@@ -271,7 +271,6 @@ END SUBROUTINE BoxMuller
 !***********************************************************
 !     the kinetic term; (-1/2a)*Tr(Vp*Upq*Vq^dag*Upq) + c.c. 
 SUBROUTINE kinetic(kin_total,U,alpha,NMAT,NDIM,NSite,LatticeSpacing) 
-
   use omp_lib
   implicit none
 
@@ -290,7 +289,7 @@ SUBROUTINE kinetic(kin_total,U,alpha,NMAT,NDIM,NSite,LatticeSpacing)
   kin_total=0d0
   !$OMP PARALLEL DO REDUCTION(+:kin_total)
   do t=1,nsite
-     !write(*,*) 'Thread ', omp_get_thread_num()
+   !   write(*,*) 'Thread ', omp_get_thread_num()
      if(t.NE.NSite)then
         tp1(t)=t+1
      else
@@ -320,7 +319,7 @@ END SUBROUTINE kinetic
 !     the kinetic term; (-1/2a)*Tr(Vp*Upq*Vq^dag*Upq) + c.c. 
 
 SUBROUTINE Calc_Wilson(U,NMAT,NDIM,NSite,wilson) 
-
+  use omp_lib
   implicit none
 
   integer NMAT,NSite,NDIM
@@ -387,7 +386,7 @@ END SUBROUTINE MakeDerivHamiltonian
 !     Molecular evolution (leap frog method)
 SUBROUTINE MolecularEvolution(NMAT,NDIM,NSite,Ntau,Dtau_U,Dtau_alpha,U,alpha,&
      LatticeSpacing,acceptance,trial,g_coeff,P_fix,P_fix_width,dH,ndec,g_coeff_alpha)
-
+  use omp_lib
   use mtmod !Mersenne twistor
   implicit none
   
@@ -801,7 +800,7 @@ END SUBROUTINE MakeDerivHamiltonian_Alpha
 !***********************************************************
 !   Derivative of Hamiltonian w.r.t. U(t,p,q,i,j); p<q
 SUBROUTINE MakeDerivHamiltonian_U(U,V,NMAT,NDIM,NSite,DerivH,LatticeSpacing)
-
+  use omp_lib
   implicit none 
   
   integer t,tp1(1:nsite),tm1(1:nsite),l,q,r,NSite,NMAT,NDIM,idim,jdim,imat,jmat,kmat
