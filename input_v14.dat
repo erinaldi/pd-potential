@@ -11,10 +11,10 @@
 1		!ncorrelator; 1 -> calculate correlator of P and P^dag
 1		!nphase; 1 -> write polyakov line phases in "phase output"
 10		!number of sweeps
-5		!NoSkip
-10		!Ntau
+1		!NoSkip
+500		!Ntau
 0.002d0	!Dtau for U
-0.001d0	!Dtau for alpha
+0.002d0	!Dtau for alpha
 1d7	!Coeff for fixing P
 0.4d0	!fix P_{dec} to this value (P_fix)
 0.005d0	!width of P (P_fix +/- this value)
