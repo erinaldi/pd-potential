@@ -30,3 +30,6 @@
 *.exe
 *.out
 *.app
+
+# Output
+EK_D3N*
