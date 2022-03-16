@@ -5,7 +5,7 @@ FC=ifort
 FCFLAGS=-O3 -qopenmp -mkl=parallel
 # The rest is for BLAS
 LDFLAGS=-llapack -lblas
-DEPENDALL=size_EK_v13.inc
+DEPENDALL=size_EK_v14.inc
 
 all: ekomp
 
