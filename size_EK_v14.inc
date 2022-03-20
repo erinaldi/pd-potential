@@ -1,15 +1,15 @@
   !----------------------------------------
   !     Number of sites along t-direction 
   integer NSite
-  parameter(NSite=24) 
+  parameter(NSite=32) 
   !----------------------------------------
   !     Size of matrices
   integer NMAT
-  parameter(NMAT=96) 
+  parameter(NMAT=64) 
   !------------
 		integer NDIM
    parameter(NDIM=3)
   !------------
   !Size of deconfined sector
   integer ndec
-  parameter(ndec=96)
+  parameter(ndec=64)

@@ -1,8 +1,8 @@
-#FC=gfortran
-#FCFLAGS=-O2 -fopenmp
+FC=gfortran
+FCFLAGS=-O2 -fopenmp
 # use this on Hokusai after "module load intel" and use -qopenmp
-FC=ifort
-FCFLAGS=-O3 -qopenmp -mkl=parallel
+#FC=ifort
+#FCFLAGS=-O3 -qopenmp -mkl=parallel
 # The rest is for BLAS
 LDFLAGS=-llapack -lblas
 DEPENDALL=size_EK_v14.inc

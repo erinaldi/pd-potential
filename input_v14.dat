@@ -1,11 +1,11 @@
-'EK_D3N32M40S64T0290P040_1.dat'	!config input
-'EK_D3N32M40S64T0290P040_1.txt'	!data output
-'EK_D3N32M40S64T0290P040_phase_1.txt'   !phase output
-'EK_D3N32M40S64T0290P040_cor_dec_1.txt'   !cor_dec output
-'EK_D3N32M40S64T0290P040_cor_con_1.txt'   !cor_con output
-'EK_D3N32M40S64T0290P040_cor_mix_1.txt'   !cor_mix output
-'EK_D3N32M40S64T0290P040_2.dat'	!config output
-0		!InicConfig; 0 -> new config, 1 -> old config
+'EK_D3N64M64S32T0290P020_0.dat'	!config input
+'EK_D3N64M64S32T0290P020_1.txt'	!data output
+'EK_D3N64M64S32T0290P020_phase_1.txt'   !phase output
+'EK_D3N64M64S32T0290P020_cor_dec_1.txt'   !cor_dec output
+'EK_D3N64M64S32T0290P020_cor_con_1.txt'   !cor_con output
+'EK_D3N64M64S32T0290P020_cor_mix_1.txt'   !cor_mix output
+'EK_D3N64M64S32T0290P020_1.dat'	!config output
+1		!InicConfig; 0 -> new config, 1 -> old config
 0		!nseed; iniconfig=0 or nseed =0 -> mersenne_seed is used
 0.29d0		!temperature 
 1		!ncorrelator; 1 -> calculate correlator of P and P^dag
@@ -16,7 +16,7 @@
 0.002d0	!Dtau for U
 0.002d0	!Dtau for alpha
 1d7	!Coeff for fixing P
-0.4d0	!fix P_{dec} to this value (P_fix)
+0.2d0	!fix P_{dec} to this value (P_fix)
 0.005d0	!width of P (P_fix +/- this value)
 1000d0	!g_coeff_alpha.
 4385	!mersenne_seed
