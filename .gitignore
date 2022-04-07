@@ -33,3 +33,7 @@
 
 # Output
 EK_D3N*
+
+# ipython checkpoints
+*.ipynb_checkpoints
+*/*.ipynb_checkpoints
