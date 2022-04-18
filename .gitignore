@@ -37,4 +37,4 @@ EK_D3N*
 # ipython checkpoints
 *.ipynb_checkpoints
 */*.ipynb_checkpoints
-phase_analysis/sample_rho
+phase-analysis/sample_rho
