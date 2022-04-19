@@ -68,7 +68,7 @@ def get_summary(filenames: list) -> pd.DataFrame:
             lines = fp.readlines()
         data_from_summary = row(lines[15:], 3)
         all_data_from_summary.append(data_from_summary)
-    summary = pd.DataFrame(data=np.asarray(data_from_summary), columns=cols)
+    summary = pd.DataFrame(data=np.asarray(all_data_from_summary), columns=cols)
     print(summary.info())
     return summary
 
@@ -80,7 +80,7 @@ def get_phases(filenames: list) -> pd.DataFrame:
             lines = fp.readlines()
         data_from_phases = row(lines, int(np.ceil(N / 3)))
         all_data_from_phases.append(data_from_phases)
-    phases = pd.DataFrame(data=np.asarray(data_from_phases))
+    phases = pd.DataFrame(data=np.asarray(all_data_from_phases))
     phases.columns = [f"theta{i}" for i in phases.columns]
     print(phases.info())
     return phases
