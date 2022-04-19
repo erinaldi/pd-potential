@@ -38,3 +38,4 @@ EK_D3N*
 *.ipynb_checkpoints
 */*.ipynb_checkpoints
 phase-analysis/sample_rho
+phase-analysis/*.txt
