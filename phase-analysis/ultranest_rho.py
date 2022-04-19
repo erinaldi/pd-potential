@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import argparse
 
 
+# %%
 # define command line arguments:
 parser = argparse.ArgumentParser()
 parser.add_argument("--nf", type=int, default=3, help="Number of Fourier coefficients")
@@ -50,8 +51,11 @@ summary_files = args.s
 phases_files = args.p
 freq = args.freq
 thermcut = args.thermcut
+print(f"Summary files: {summary_files}")
+print(f"Phases files: {phases_files}")
 
 
+# %%
 def row(lst: list, n: int) -> np.ndarray:
     """Grab successive n-sized chunks from list of lines in file and return a numerical array of elements"""
     rows = []
@@ -103,6 +107,7 @@ def select_data(phases: pd.DataFrame, freq: int = 2, thermcut: int = 0) -> np.nd
     return alphas
 
 
+# %%
 def prior_transform(cube):
     # the argument, cube, consists of values from 0 to 1
     # we have to convert them to physical scales
