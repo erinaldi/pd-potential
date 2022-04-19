@@ -11,11 +11,48 @@ import xarray as xr
 import ultranest
 from ultranest.plot import PredictionBand
 import matplotlib.pyplot as plt
-import fire
+import argparse
 
 
-# %%
-def row(lst, n):
+# define command line arguments:
+parser = argparse.ArgumentParser()
+parser.add_argument("--nf", type=int, default=3, help="Number of Fourier coefficients")
+parser.add_argument(
+    "--N", type=int, default=32, help="Size of matrices/number of phases"
+)
+parser.add_argument(
+    "--freq", type=int, default=2, help="Frequency of measurements"
+)
+parser.add_argument(
+    "--thermcut", type=int, default=0, help="Thermalization cut"
+)
+parser.add_argument("--data_dir", type=str, default="./", help="Folder with data files")
+parser.add_argument(
+    "--s",
+    nargs="+",
+    required=True,
+    help="Summary file. Add more to build a list.",
+)
+parser.add_argument(
+    "--p",
+    nargs="+",
+    required=True,
+    help="Phases file. Add more to build a list",
+)
+args = parser.parse_args()
+
+cols = ["tj", "pc", "dH", "pdec", "pcon", "e", "w", "acc"]
+N = args.N
+Nf = args.nf
+parameters = [f"k{i+1}" for i in np.arange(Nf)]
+data_folder = args.data_dir
+summary_files = args.s
+phases_files = args.p
+freq = args.freq
+thermcut = args.thermcut
+
+
+def row(lst: list, n: int) -> np.ndarray:
     """Grab successive n-sized chunks from list of lines in file and return a numerical array of elements"""
     rows = []
     for i in np.arange(0, len(lst), n):
@@ -24,107 +61,46 @@ def row(lst, n):
     return np.asarray(rows)
 
 
-# %% [markdown]
-# ## Import phases from file on disk
-#
-# Th file has rows with 16 different columns, one for each measured phase.
-# The number of rows is the number of lattice configurations used for the measurements.
-cols = ["tj", "pc", "dH", "pdec", "pcon", "e", "w", "acc"]
-
-# %%
-N = 64
-S = 16
-
-# %%
-data_folder = f"/Users/enrythebest/Dropbox (University of Michigan)/Projects/PD/EK_v14/N{N}M{N}/S{S}/T029/P02/"
-summary_name = f"EK_D3N{N}M{N}S{S}T0290P020_4.txt"
-phase_name = f"EK_D3N{N}M{N}S{S}T0290P020_phase_4.txt"
-# %% [markdown]
-# ### Summary file
-
-# %%
-with open(data_folder + summary_name) as fp:
-    lines = fp.readlines()
-data_from_summary = row(lines[15:], 3)
-summary = pd.DataFrame(data=data_from_summary, columns=cols)
-print(summary.info())
-
-# %% [markdown]
-# We can look at some of the autocorrelation times
-
-# %%
-tau = autocorr.integrated_time(summary.e, tol=0)
-print(f"Action autocorrelation integrated time: {tau[0]:.2f}")
-tau = autocorr.integrated_time(summary.w, tol=0)
-print(f"|Wilson| autocorrelation integrated time: {tau[0]:.2f}")
-
-# %%
-fig, ax = plt.subplots(figsize=(12, 10))
-summary[["e", "w"]].plot(subplots=True, ax=ax)
-plt.savefig("energy.png")
-
-# %% [markdown]
-# ### Phase file
-
-# %%
-with open(data_folder + phase_name) as fp:
-    lines = fp.readlines()
-print(f"Chunk size: {np.ceil(N/3)}")
-data_from_phases = row(lines, int(np.ceil(N / 3)))
-phases = pd.DataFrame(data=data_from_phases)
-phases.columns = [f"theta{i}" for i in phases.columns]
-
-# %% [markdown]
-# * We can concatenate multiple files
-
-# %%
-# phases_more = pd.read_csv(data_folder+phase_name.replace('_10','_9'), sep="\s+", header=None)
-
-# %%
-# phases_more.columns = [f"theta{i}" for i in phases_more.columns]
-
-# %%
-# concatenate and reindex from 0 to the total number of measurements
-# phases = pd.concat((phases,phases_more),ignore_index=True)
-
-# %%
-print(phases.info())
+def get_summary(filenames: list) -> pd.DataFrame:
+    all_data_from_summary = []
+    for summary_name in filenames:
+        with open(data_folder + summary_name) as fp:
+            lines = fp.readlines()
+        data_from_summary = row(lines[15:], 3)
+        all_data_from_summary.append(data_from_summary)
+    summary = pd.DataFrame(data=np.asarray(data_from_summary), columns=cols)
+    print(summary.info())
+    return summary
 
 
-# %% [markdown]
-# Create an histogram for entire dataset of phases. Here we can also choose to apply cuts for thermalization or select measurements with a certain frequency
-
-# %%
-freq = 2
-thermcut = 0
-
-# %%
-alphas = phases.iloc[thermcut::freq].values.flatten()
-
-# %%
-print(f"We have a total of {alphas.shape[0]} phases")
-
-# %% [markdown]
-# Fold the distribution by taking the absolute value
-
-# %%
-alphas_folded = np.fabs(alphas)
+def get_phases(filenames: list) -> pd.DataFrame:
+    all_data_from_phases = []
+    for phases_name in filenames:
+        with open(data_folder + phases_name) as fp:
+            lines = fp.readlines()
+        data_from_phases = row(lines, int(np.ceil(N / 3)))
+        all_data_from_phases.append(data_from_phases)
+    phases = pd.DataFrame(data=np.asarray(data_from_phases))
+    phases.columns = [f"theta{i}" for i in phases.columns]
+    print(phases.info())
+    return phases
 
 
-# %% [markdown]
-# ## Fit the probability distribution based on Fourier expansion
+def autocorrelations(summary: pd.DataFrame) -> None:
+    tau = autocorr.integrated_time(summary.e, tol=0)
+    print(f"Action autocorrelation integrated time: {tau[0]:.2f}")
+    tau = autocorr.integrated_time(summary.w, tol=0)
+    print(f"|Wilson| autocorrelation integrated time: {tau[0]:.2f}")
 
-# %% [markdown]
-# We use this as our model for the probability distribution of $\alpha$ with unknown coefficients $\tilde{\rho}_k$:
-#
-# $$\rho(\alpha)=\frac{1}{2 \pi}+\sum_{k=1}^{\infty} \tilde{\rho}_{k} \cos (k \alpha)$$
+    _, ax = plt.subplots(figsize=(12, 10))
+    summary[["e", "w"]].plot(subplots=True, ax=ax)
+    plt.savefig("energy.png")
 
-# %% [markdown]
-# Choose the number of parameters and their names based on how many Fourier coefficients to keep:
 
-# %%
-Nf = 3  # number of Fourier coefficient
-parameters = [f"k{i+1}" for i in np.arange(Nf)]
+def select_data(phases: pd.DataFrame, freq: int = 2, thermcut: int = 0) -> np.ndarray:
+    alphas = phases.iloc[thermcut::freq].values.flatten()
+    print(f"We have a total of {alphas.shape[0]} phases")
+    return alphas
 
 
 def prior_transform(cube):
@@ -138,13 +114,6 @@ def prior_transform(cube):
     return params
 
 
-# %% [markdown]
-# Define the model above
-
-# %% [markdown]
-# Make sure to only keep positive probabilities
-
-# %%
 def prob_model(alpha, params):
     fourier_terms = np.array(
         [params[k] * np.cos((k + 1) * alpha) for k in np.arange(Nf)]
@@ -155,12 +124,6 @@ def prob_model(alpha, params):
     return prob
 
 
-# %% [markdown]
-# This likelihood ignores the correlations between differen $\alpha$ values. We define it as:
-#
-# $$ \mathcal{L} \propto \prod_{n=1}^{n_{\text {config }}} \prod_{i=1}^{N} \rho\left(\alpha_{i}^{(n)}\right) $$
-
-# %%
 def log_likelihood(params):
     # compute the probability for each alpha point
     probs_alphas = prob_model(alphas, params)
@@ -171,16 +134,14 @@ def log_likelihood(params):
     return loglike
 
 
-# %% [markdown]
-# The log-likelihood is often ridiculously small (and negative) because the probabilities are zero hence the sum of logs is -$\infty$
+# get summary data and plot autocorrelations
+summary = get_summary(summary_files)
+autocorrelations(summary)
+# get phases data
+phases = get_phases(phases_files)
+alphas = select_data(phases, freq, thermcut)
+alphas_folded = np.fabs(alphas)
 
-# %% [markdown]
-# ### Run the sampler
-
-# %% [markdown]
-# Define the reactive nested sampler
-
-# %%
 sampler = ultranest.ReactiveNestedSampler(
     parameters,
     log_likelihood,
@@ -188,43 +149,8 @@ sampler = ultranest.ReactiveNestedSampler(
     log_dir="sample_rho",
     resume="overwrite",
 )
-
-# %% [markdown]
-# If needed you can add a slice sampler for a more efficient sampling in high dimensions
-
-# %%
-# import ultranest.stepsampler
-
-# # have to choose the number of steps the slice sampler should take
-# # after first results, this should be increased and checked for consistency.
-
-# nsteps = 2 * len(parameters)
-# # create step sampler:
-# sampler.stepsampler = ultranest.stepsampler.RegionSliceSampler(nsteps=nsteps)
-
-# %%
 results = sampler.run(min_num_live_points=400, viz_callback=False)
-
-# %% [markdown]
-# ### Plot results
-
-# %%
 sampler.print_results()
-
-# %% [markdown]
-# The result includes an estimate of the evidence `logZ` (or marginal likelihood) which tells us how probable the data is under this model. This is the strength of nested sampling methods. It allows us to discriminate between models. For example, we can run the code again with the same data but a different number of Fourier coefficients. The difference in `logZ` will tell us which model is favored by the data! (e.g. see [this tutotial](https://johannesbuchner.github.io/UltraNest/example-sine-modelcomparison.html))
-#
-# Table of results:
-#
-#  Model  | Evidence |
-# | ----- | ----------- |
-# | Nf = 5  |  logZ = -70674.178 +- 0.413 |
-# | Nf = 4  |  logZ = -70670.095 +- 0.315 |
-# | Nf = 3  |  logZ = -70667.004 +- 0.259 |
-# | Nf = 2  |  logZ = -70672.906 +- 0.273 |
-# | Nf = 1  |  logZ = -70781.606 +- 0.116 |
-
-# %%
 sampler.plot()
 
 # %%
@@ -272,28 +198,9 @@ band.shade(color="k", alpha=0.3)
 band.shade(q=0.49, color="gray", alpha=0.2)
 plt.savefig("rho_alpha.png")
 
-# %% [markdown]
-# ## Extract the value of $\rho$ at $\pi$
-
-
-# %% [markdown]
-# Take all the samples at the value of $\pi$ (remember that we saved 2$\rho$ in the prediction band)
-
-# %%
 rhopi = np.asarray([rho[-1] / 2 for rho in band.ys])
-
-# %%
 errs = np.diff(np.quantile(rhopi, [0.16, 0.5, 0.84]))
 print(f"Value of rho(pi) = {rhopi.mean():.5f} + {errs[1]:.5f} - {errs[0]:.5f}")
-
-
-# %% [markdown]
-# Value of $M$: derived from the equation
-# $$
-# \rho(\pi) = \frac{1}{2\pi} \left( 1 - \frac{M}{N} \right)
-# $$
-
-# %%
 M = N * (1.0 - 2 * np.pi * rhopi)
 errs = np.diff(np.quantile(M, [0.16, 0.5, 0.84]))
 print(f"Value of M = {M.mean():.5f} + {errs[1]:.5f} - {errs[0]:.5f}")
