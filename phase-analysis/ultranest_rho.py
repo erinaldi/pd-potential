@@ -40,6 +40,9 @@ parser.add_argument(
     required=True,
     help="Phases file. Add more to build a list",
 )
+parser.add_argument(
+    "--cp", type=bool, default=True, help="If we used the intel compiler with weird output formatting"
+)
 args = parser.parse_args()
 
 cols = ["tj", "pc", "dH", "pdec", "pcon", "e", "w", "acc"]
@@ -51,9 +54,14 @@ summary_files = args.s
 phases_files = args.p
 freq = args.freq
 thermcut = args.thermcut
+if args.cp:
+    chunk_phase = int(np.ceil(N / 3))
+    chunk_summary = int(3)
+else:
+    chunk_phase = chunk_summary = int(1)
 print(f"Summary files: {summary_files}")
 print(f"Phases files: {phases_files}")
-
+print(f"Chunks: {chunk_summary} {chunk_phase}")
 
 # %%
 def row(lst: list, n: int) -> np.ndarray:
@@ -65,24 +73,24 @@ def row(lst: list, n: int) -> np.ndarray:
     return np.asarray(rows)
 
 
-def get_summary(filenames: list) -> pd.DataFrame:
+def get_summary(filenames: list, chunk: int) -> pd.DataFrame:
     all_data_from_summary = []
     for summary_name in filenames:
         with open(data_folder + summary_name) as fp:
             lines = fp.readlines()
-        data_from_summary = row(lines[15:], 3)
+        data_from_summary = row(lines[15:], chunk)
         all_data_from_summary.append(data_from_summary)
     summary = pd.DataFrame(data=np.asarray(all_data_from_summary).reshape(-1,8), columns=cols)
     print(summary.info())
     return summary
 
 
-def get_phases(filenames: list) -> pd.DataFrame:
+def get_phases(filenames: list, chunk: int) -> pd.DataFrame:
     all_data_from_phases = []
     for phases_name in filenames:
         with open(data_folder + phases_name) as fp:
             lines = fp.readlines()
-        data_from_phases = row(lines, int(np.ceil(N / 3)))
+        data_from_phases = row(lines, chunk)
         all_data_from_phases.append(data_from_phases)
     phases = pd.DataFrame(data=np.asarray(all_data_from_phases).reshape(-1,N))
     phases.columns = [f"theta{i}" for i in phases.columns]
@@ -140,10 +148,10 @@ def log_likelihood(params):
 
 
 # get summary data and plot autocorrelations
-summary = get_summary(summary_files)
+summary = get_summary(summary_files,chunk_summary)
 autocorrelations(summary)
 # get phases data
-phases = get_phases(phases_files)
+phases = get_phases(phases_files,chunk_phase)
 alphas = select_data(phases, freq, thermcut)
 alphas_folded = np.fabs(alphas)
 
