@@ -41,7 +41,7 @@ parser.add_argument(
     help="Phases file. Add more to build a list",
 )
 parser.add_argument(
-    "--cp", type=bool, default=True, help="If we used the intel compiler with weird output formatting"
+    "--cp", action="store_true", help="If we used the fortran compiler with no chunks."
 )
 args = parser.parse_args()
 
@@ -55,10 +55,11 @@ phases_files = args.p
 freq = args.freq
 thermcut = args.thermcut
 if args.cp:
+    chunk_phase = chunk_summary = int(1)
+else:
     chunk_phase = int(np.ceil(N / 3))
     chunk_summary = int(3)
-else:
-    chunk_phase = chunk_summary = int(1)
+
 print(f"Summary files: {summary_files}")
 print(f"Phases files: {phases_files}")
 print(f"Chunks: {chunk_summary} {chunk_phase}")
