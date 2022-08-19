@@ -227,9 +227,10 @@ if __name__ == "__main__":
     T = args.T
     P = args.P
     data_folder = args.data
+    out_folder = args.out
     run_folder = f"N{N}/S{NT}/M{M}/T{str(T).replace('.','')}/P{str(P).replace('.','')}"
     if args.all:
-        gather_data_summary(data_folder, run_folder, True)
+        gather_data_summary(data_folder, run_folder, out_folder, True)
     else:
-        gather_data_summary(data_folder, run_folder)
+        gather_data_summary(data_folder, run_folder, out_folder)
 
