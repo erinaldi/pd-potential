@@ -24,7 +24,7 @@ def get_chunk_and_skip_size(pfile: str, N: int):
     line = getline(pfile, 1)
     # count the blocks of spaces
     num_blocks = len(re.findall(pattern, line))
-    # if the number of blocks is smaller than N, the file has been created with ifort
+    # if the number of blocks is smaller than (N+1), the file has been created with ifort
     # and the chunk size is 3 and the number of rows to skip is 0
     if num_blocks < N:
         chunk = int(np.ceil(N / 3))
@@ -69,7 +69,7 @@ def create_dataframe_phase(pfile: str, N: int) -> pd.DataFrame:
     with open(pfile) as fp:
         lines = fp.readlines()
     data_array = row(lines[skips:], chunk)
-    data = pd.DataFrame(data=data_array)
+    data = pd.DataFrame(data=data_array.reshape(-1,N))
     data.columns = [f"theta{i}" for i in data.columns]
     return data
 
@@ -77,7 +77,6 @@ def create_dataframe_phase(pfile: str, N: int) -> pd.DataFrame:
 # %%
 # main function to gather the data from a folder or many folders
 def gather_data_phase(
-    N: int = 16,
     data_folder: str = "../runs/hokusai",
     run_folder: str = "N16/S16/M16/T029/P02",
     out_folder: str = "data-files",
@@ -85,7 +84,6 @@ def gather_data_phase(
 ):
     """Collect all the data for the observables in different output files for the same set of parameters
     Args:
-        N (int): The number of phases is equal to the rank of the matrices. Defaults to "16".
         data_folder (str, optional): The main data folder where all the different parameters were run. Defaults to "../runs/hokusai".
         run_folder (str, optional): The specific run folder with N/S/M/T/P. Defaults to "N16/S16/M16/T029/P02/".
         put_folder (str, optional): The folder where to save the N/S/M/T/P/phase.csv file. Defaults to "data-files".
@@ -103,6 +101,8 @@ def gather_data_phase(
     # loop over runs: they are Path objects
     print(f"We have a total of {len(all_runs)} runs to gather...")
     for run in all_runs:
+        # get the number of phases from the folder name with N
+        N = int(run.parts[-5].split('N')[1])
         # get the phases files: should end with a number before the extension after phase
         pfiles = [x for x in run.glob("EK_*[0-9]_phase_[0-9].txt") if x.is_file()]
         pfiles.sort()
@@ -164,7 +164,7 @@ if __name__ == "__main__":
     out_folder = args.out
     run_folder = f"N{N}/S{NT}/M{M}/T{str(T).replace('.','')}/P{str(P).replace('.','')}"
     if args.all:
-        gather_data_phase(N, data_folder, run_folder, out_folder, True)
+        gather_data_phase(data_folder, run_folder, out_folder, True)
     else:
-        gather_data_phase(N, data_folder, run_folder, out_folder)
+        gather_data_phase(data_folder, run_folder, out_folder)
 
