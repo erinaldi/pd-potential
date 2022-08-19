@@ -69,7 +69,7 @@ def create_dataframe_phase(pfile: str, N: int) -> pd.DataFrame:
     with open(pfile) as fp:
         lines = fp.readlines()
     data_array = row(lines[skips:], chunk)
-    data = pd.DataFrame(data=data_array.reshape(-1,N))
+    data = pd.DataFrame(data=data_array.reshape(-1, N))
     data.columns = [f"theta{i}" for i in data.columns]
     return data
 
@@ -102,7 +102,7 @@ def gather_data_phase(
     print(f"We have a total of {len(all_runs)} runs to gather...")
     for run in all_runs:
         # get the number of phases from the folder name with N
-        N = int(run.parts[-5].split('N')[1])
+        N = int(run.parts[-5].split("N")[1])
         # get the phases files: should end with a number before the extension after phase
         pfiles = [x for x in run.glob("EK_*[0-9]_phase_[0-9].txt") if x.is_file()]
         pfiles.sort()
@@ -112,17 +112,19 @@ def gather_data_phase(
         if len(pfiles) > 0:
             # create dataframes for each file
             print(f"- We have a total of {len(pfiles)} files in run {run}")
-            frames = [create_dataframe_phase(str(f),N) for f in pfiles]
+            frames = [create_dataframe_phase(str(f), N) for f in pfiles]
             # concatenate in single dataframe
             result = pd.concat(frames, ignore_index=True)
             print(f"-- total data size: {result.shape}")
             # make output dir for this run
-            pnew = pout.joinpath('/'.join(run.parts[-5:]))
-            pnew.mkdir(parents=True,exist_ok=True)
+            pnew = pout.joinpath("/".join(run.parts[-5:]))
+            pnew.mkdir(parents=True, exist_ok=True)
             # save to output file
             outputfile = pnew / "phase.csv"
             result.sort_index().to_csv(outputfile, header=True)
             print(f"-- file saved in {outputfile.as_posix()}")
+        else:
+            print("- no files... skipping.")
 
 
 if __name__ == "__main__":

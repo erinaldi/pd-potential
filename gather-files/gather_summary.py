@@ -182,12 +182,14 @@ def gather_data_summary(
             result = pd.concat(frames, ignore_index=True)
             print(f"-- total data size: {result.shape}")
             # make output dir for this run
-            pnew = pout.joinpath('/'.join(run.parts[-5:]))
-            pnew.mkdir(parents=True,exist_ok=True)
+            pnew = pout.joinpath("/".join(run.parts[-5:]))
+            pnew.mkdir(parents=True, exist_ok=True)
             # save to output file
             outputfile = pnew / "summary.csv"
             result.sort_index().to_csv(outputfile, header=True)
             print(f"-- file saved in {outputfile.as_posix()}")
+        else:
+            print("- no files... skipping.")
 
 
 if __name__ == "__main__":

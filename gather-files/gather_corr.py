@@ -70,7 +70,7 @@ def create_dataframe_cor(pfile: str, N: int = 15) -> pd.DataFrame:
         lines = fp.readlines()
     data_array = row(lines[skips:], chunk)
     # there are always N=15 saved values of L (because the minimal NT is 16)
-    data = pd.DataFrame(data=data_array.reshape(-1,N))
+    data = pd.DataFrame(data=data_array.reshape(-1, N))
     data.columns = [f"L{i}" for i in data.columns]
     return data
 
@@ -105,22 +105,24 @@ def gather_data_cor(
     print(f"We have a total of {len(all_runs)} runs to gather...")
     for run in all_runs:
         # get the cors files: should end with a number before the extension after corr_type
-        pfiles = [x for x in run.glob(f"EK_*_{corr_type}_[0-9].txt") if x.is_file()]
+        pfiles = [x for x in run.glob(f"EK_*_cor_{corr_type}_[0-9].txt") if x.is_file()]
         pfiles.sort()
-        pfiles1 = [x for x in run.glob(f"EK_*_{corr_type}_[0-9][0-9].txt") if x.is_file()]
+        pfiles1 = [
+            x for x in run.glob(f"EK_*_cor_{corr_type}_[0-9][0-9].txt") if x.is_file()
+        ]
         pfiles1.sort()
         pfiles += pfiles1
         if len(pfiles) > 0:
             # create dataframes for each file
             print(f"- We have a total of {len(pfiles)} files in run {run}")
             # N=15 is the number of correlation distances
-            frames = [create_dataframe_cor(str(f),15) for f in pfiles]
+            frames = [create_dataframe_cor(str(f), 15) for f in pfiles]
             # concatenate in single dataframe
             result = pd.concat(frames, ignore_index=True)
             print(f"-- total data size: {result.shape}")
             # make output dir for this run
-            pnew = pout.joinpath('/'.join(run.parts[-5:]))
-            pnew.mkdir(parents=True,exist_ok=True)
+            pnew = pout.joinpath("/".join(run.parts[-5:]))
+            pnew.mkdir(parents=True, exist_ok=True)
             # save to output file
             outputfile = pnew / f"cor_{corr_type}.csv"
             result.sort_index().to_csv(outputfile, header=True)
