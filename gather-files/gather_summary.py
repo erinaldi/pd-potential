@@ -100,7 +100,6 @@ def row(lst: list, n: int) -> np.ndarray:
 
 # %%
 # read the observables from a txt file and create a dataframe
-# also add the MCMC params as new columns, using the trajectory number as index
 def create_dataframe_summary(pfile: str) -> pd.DataFrame:
     """Create the dataframe containing the observables for each trajectory.
     Then add the MCMC parameters from the header as additional columns.
