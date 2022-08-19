@@ -1,4 +1,3 @@
 {
-    "python.formatting.blackPath": "/Users/enrythebest/miniforge3/envs/ultranest/bin/black",
     "python.formatting.provider": "black"
 }
