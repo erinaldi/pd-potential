@@ -38,7 +38,7 @@ class Point():
         self.WL_data_av = np.average(self.WL_data_raw,axis=0)
         self.WL_errs = np.zeros_like(self.WL_data_av)
         self.errs_validity = np.zeros_like(self.WL_data_av)
-        self.WL_errs, self.errs_validity, self.autocor_tau = self.__get_errors()
+        self.WL_errs, self.errs_validity, self.autocor_taus = self.__get_errors()
 
     def __construct_filename(self, path_folder=STANDARD_PATH_FOLDER):
         p_str_few_dp = f"{self.p}".replace(".","")
@@ -52,6 +52,7 @@ class Point():
         Ls = np.arange(1, num_Ls+1)
         errs = np.zeros(num_Ls)
         valid = np.ones(num_Ls)
+        taus = np.ones(num_Ls)
         for i, l in enumerate(Ls):
             w_data = self.WL_data_raw[:,l-1]
             try:
@@ -68,10 +69,11 @@ class Point():
                     err = np.sqrt(1 / len(w_data)) * np.std(w_data)
                 valid[i] = 0
             errs[i] = err
-        return errs, valid, tau
+            taus[i] = tau
+        return errs, valid, taus
 
     def __get_thermalisation_cut(self, w_data):
-        tau = emcee.autocorr.integrated_time(w_data, c=3, quiet=True)
+        tau = emcee.autocorr.integrated_time(w_data[:,0], c=3, quiet=True)
         tau = max(tau, 1)
         cut = math.ceil(10 * tau)
         assert(cut < len(w_data))
