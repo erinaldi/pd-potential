@@ -147,20 +147,24 @@ def create_dataframe_summary(pfile: str) -> pd.DataFrame:
 def gather_data_summary(
     data_folder: str = "../runs/hokusai",
     run_folder: str = "N16/S16/M16/T029/P02",
+    out_folder: str = "data-files",
     do_all: bool = False,
 ):
     """Collect all the data for the observables in different output files for the same set of parameters
     Args:
         data_folder (str, optional): The main data folder where all the different parameters were run. Defaults to "../runs/hokusai".
         run_folder (str, optional): The specific run folder with N/S/M/T/P. Defaults to "N16/S16/M16/T029/P02/".
+        put_folder (str, optional): The folder where to save the N/S/M/T/P/summary.csv file. Defaults to "data-files".
         do_all (bool, optional): If we should collect the data from all runs or just the one specified. Defaults to False
     """
     pdata = Path(data_folder)
+    pout = Path(out_folder)
     assert pdata.is_dir()
-    assert (pdata / run_folder).is_dir()
+    assert pout.is_dir()
     if do_all:
         all_runs = [x for x in pdata.glob("N*/S*/M*/T*/P*")]
     else:
+        assert (pdata / run_folder).is_dir()
         all_runs = [pdata / run_folder]
     # loop over runs: they are Path objects
     print(f"We have a total of {len(all_runs)} runs to gather...")
@@ -172,11 +176,17 @@ def gather_data_summary(
         pfiles1.sort()
         pfiles += pfiles1
         if len(pfiles) > 0:
+            # create dataframes for each file
             print(f"- We have a total of {len(pfiles)} files in run {run}")
             frames = [create_dataframe_summary(str(f)) for f in pfiles]
+            # concatenate in single dataframe
             result = pd.concat(frames, ignore_index=True)
             print(f"-- total data size: {result.shape}")
-            outputfile = run / "summary_data.csv"
+            # make output dir for this run
+            pnew = pout.joinpath('/'.join(run.parts[-5:]))
+            pnew.mkdir(parents=True,exist_ok=True)
+            # save to output file
+            outputfile = pnew / "summary.csv"
             result.sort_index().to_csv(outputfile, header=True)
             print(f"-- file saved in {outputfile.as_posix()}")
 
@@ -196,6 +206,12 @@ if __name__ == "__main__":
         type=str,
         default="/home/enrico/Projects/LP/runs/hokusai",
         help="Folder with data files",
+    )
+    parser.add_argument(
+        "--out",
+        type=str,
+        default="/home/enrico/Projects/LP/pd-potential/data-files",
+        help="Folder where to store output files",
     )
     parser.add_argument(
         "--all",
