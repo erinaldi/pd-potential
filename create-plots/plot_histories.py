@@ -18,6 +18,9 @@ for con_path in all_con_files:
     t = float("0."+tstr[2:]) # assumes 0<T<1
     p = float("0."+pstr[2:]) # assumes 0<P<1
 
+    if m == n:
+        continue
+
     summary_filename = con_path.parent / "summary.csv"
     summary_data = pd.read_csv(summary_filename,header=0,index_col=0)
     
@@ -47,7 +50,7 @@ for con_path in all_con_files:
 
     save_dir = Path(SAVE_DIR_ROOT, con_path.parent)
     save_dir.mkdir(parents=True, exist_ok=True)
-    fig.suptitle(f"$\\tau={pt.autocor_tau:.3f}$\nthermal cut $={tcut}$")
+    fig.suptitle(f"$L=1$ $\\tau={pt.autocor_taus[0]:.3f}$\n$L=2$ $\\tau={pt.autocor_taus[1]:.3f}$\nthermal cut $={tcut}$")
     fig.tight_layout()
     fig.savefig(Path(save_dir, "history.png"))
     plt.close(fig)
