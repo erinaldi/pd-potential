@@ -53,15 +53,16 @@ def row(lst: list, n: int) -> np.ndarray:
 
 # %%
 # read the observables from a txt file and create a dataframe
-def create_dataframe_phase(pfile: str) -> pd.DataFrame:
+def create_dataframe_phase(pfile: str, N: int) -> pd.DataFrame:
     """Create the dataframe containing the phases for each measured configuration.
     Args:
-        pfile (str): The name of the txt file where the observables are saved
+        pfile (str): The name of the txt file where the phases are saved
+        N (int): The number of phases is equal to the rank of the matrices
     Returns:
         pd.DataFrame: a `pandas` dataframe containing the phases of the run
     """
     try:
-        chunk, skips = get_chunk_and_skip_size(pfile)
+        chunk, skips = get_chunk_and_skip_size(pfile, N)
     except:
         print("Problem getting the chunk and skip sizes")
     # read lines
@@ -76,6 +77,7 @@ def create_dataframe_phase(pfile: str) -> pd.DataFrame:
 # %%
 # main function to gather the data from a folder or many folders
 def gather_data_phase(
+    N: int = 16,
     data_folder: str = "../runs/hokusai",
     run_folder: str = "N16/S16/M16/T029/P02",
     out_folder: str = "data-files",
@@ -83,6 +85,7 @@ def gather_data_phase(
 ):
     """Collect all the data for the observables in different output files for the same set of parameters
     Args:
+        N (int): The number of phases is equal to the rank of the matrices. Defaults to "16".
         data_folder (str, optional): The main data folder where all the different parameters were run. Defaults to "../runs/hokusai".
         run_folder (str, optional): The specific run folder with N/S/M/T/P. Defaults to "N16/S16/M16/T029/P02/".
         put_folder (str, optional): The folder where to save the N/S/M/T/P/phase.csv file. Defaults to "data-files".
@@ -109,7 +112,7 @@ def gather_data_phase(
         if len(pfiles) > 0:
             # create dataframes for each file
             print(f"- We have a total of {len(pfiles)} files in run {run}")
-            frames = [create_dataframe_phase(str(f)) for f in pfiles]
+            frames = [create_dataframe_phase(str(f),N) for f in pfiles]
             # concatenate in single dataframe
             result = pd.concat(frames, ignore_index=True)
             print(f"-- total data size: {result.shape}")
@@ -161,7 +164,7 @@ if __name__ == "__main__":
     out_folder = args.out
     run_folder = f"N{N}/S{NT}/M{M}/T{str(T).replace('.','')}/P{str(P).replace('.','')}"
     if args.all:
-        gather_data_phase(data_folder, run_folder, out_folder, True)
+        gather_data_phase(N, data_folder, run_folder, out_folder, True)
     else:
-        gather_data_phase(data_folder, run_folder, out_folder)
+        gather_data_phase(N, data_folder, run_folder, out_folder)
 
