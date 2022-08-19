@@ -1,4 +1,4 @@
 {
-    "python.formatting.blackPath": "/Users/enrythebest/miniforge3/envs/ultranest/bin/black",
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+    "fortran.fortls.disabled": true
 }
