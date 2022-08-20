@@ -6,6 +6,8 @@ from typing import List
 from common import Points_Same_Type, Point, Points_Combine_MixCon
 import plots_common as p_common
 
+plt.rcParams["figure.figsize"] = (10,10 / 1.618)
+
 def plot_why_remove_N16(pointset, show_L):
     large_nt_WL = {}
     large_nt_WL_err = {}
@@ -146,3 +148,6 @@ def main():
     fig.savefig(Path(p_common.SAVE_FOLDER,f'compare_N16removed_con_P020_L{show_L}.pdf'))
     fig = plot_why_remove_N16(WL_con_P025, show_L=show_L)
     fig.savefig(Path(p_common.SAVE_FOLDER,f'compare_N16removed_con_P025_L{show_L}.pdf'))
+
+if __name__ == "__main__":
+    main()
