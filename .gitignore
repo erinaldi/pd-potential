@@ -37,6 +37,7 @@ EK_D3N*
 *.pdf
 *.png
 *.txt
+*.csv
 
 # ipython checkpoints
 *.ipynb_checkpoints
