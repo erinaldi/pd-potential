@@ -6,6 +6,8 @@ from typing import List
 from common import Points_Same_Type, Point, Points_Combine_MixCon
 import plots_common as p_common
 
+plt.rcParams["figure.figsize"] = (10,10 / 1.618)
+
 def plot_Wmix_plus_Wcon(pointset_mixcon):
     T = 0.29
     BETA = 1 / T

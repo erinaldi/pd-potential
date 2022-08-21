@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import plots_common as p_common
 
+plt.rcParams["figure.figsize"] = (10,10 / 1.618)
+
 def plot_MH_T025():
     figs = []
 

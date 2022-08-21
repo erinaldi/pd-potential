@@ -6,6 +6,8 @@ from typing import List
 from common import Points_Same_Type, Point
 import plots_common as p_common
 
+plt.rcParams["figure.figsize"] = (10,10 / 1.618)
+
 def plot_2D_interpolation(pointset):
     # T = 0.29
     # BETA = 1 / T
