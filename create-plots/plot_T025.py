@@ -115,6 +115,7 @@ def take_large_N_unconstrained(ns, WLs, WL_errs):
     return c, cerr
 
 def plot_T025():
+    # ** COLLECT POINTS WE WILL USE **
     UNCONSTRAINED_P_FILLER = "0.5"
     CONSTANT_NT = 24
     T = 0.25
@@ -125,7 +126,13 @@ def plot_T025():
     for n in Ns:
         points[n] = Point(n, n, UNCONSTRAINED_P_FILLER, T, CONSTANT_NT, WL_TYPE)
     
-    # " For the extrapolation to N = ∞, we used data points at N = 24, 32, 48, 64, 96, 128 for L = 1, 2, 3, 4 and N = 48, 64, 96, 128 for L = 5. "
+    # ** PLOT L vs WL **
+    fig_Lfit, ax = plt.subplots()
+    xlim = np.array((0.5, 5.5))
+    ylim =  np.array((10**-5, 1))
+
+    # Large N extrapolation
+    ## " For the extrapolation to N = ∞, we used data points at N = 24, 32, 48, 64, 96, 128 for L = 1, 2, 3, 4 and N = 48, 64, 96, 128 for L = 5. "
     largeN = np.zeros(5)
     largeN_errs = np.zeros(5)
     Ls = (1,2,3,4,5)
@@ -140,7 +147,6 @@ def plot_T025():
         errs = [points[n].WL_errs[l-1] for n in use_Ns]
         largeN[l-1], largeN_errs[l-1] = take_large_N_unconstrained(use_Ns, WLs, errs)
         
-    fig, ax = plt.subplots()
     for n in Ns:
         ws, err = points[n].WL_data_av, points[n].WL_errs
         ls = np.arange(1, len(ws)+1)
@@ -150,25 +156,70 @@ def plot_T025():
     
     ax.scatter(Ls, largeN, label=f"$N=\\infty$", marker=p_common.MARKERS_BY_N['large'], s=70, linewidths=1, c=p_common.COLOURS_BY_N['large'])
     ax.errorbar(Ls, largeN, yerr=largeN_errs, linestyle='none', capsize=4, linewidth=2, c=p_common.COLOURS_BY_N['large'])
-    
+    yy = np.log(gvar.gvar(largeN, largeN_errs))
+    (m, c), cov = np.polyfit(Ls, gvar.mean(yy), w=1/gvar.sdev(yy), deg=1, cov='unscaled')
+    merr, cerr = np.sqrt(np.diag(cov))
+    grad = gvar.gvar(m, merr)
+    intcpt = gvar.gvar(c, cerr)
+    yfit = np.exp(grad * np.array(xlim) + intcpt)
+    # ax.fill_between(xlim, gvar.mean(yfit)-gvar.sdev(yfit), gvar.mean(yfit)+gvar.sdev(yfit), alpha=0.3, color='#8B008B')#p_common.COLOURS_BY_N['large'])#, c=COLOURS['fit'])
+    ax.fill_between(xlim, gvar.mean(yfit)-gvar.sdev(yfit), gvar.mean(yfit)+gvar.sdev(yfit), alpha=0.3, color=p_common.COLOURS_BY_N['large'])#, c=COLOURS['fit'])
+    ax.plot(xlim, gvar.mean(yfit), c=p_common.COLOURS_BY_N['large'])
+
+    predicted_y = np.exp(-1.0/2.0/0.25*xlim)
+    ax.plot(xlim, predicted_y, color='blue')
+
     ax.set_xlabel("$L$", fontsize=20)
     ax.set_ylabel("$W(L)/N$", fontsize=20)
     ax.tick_params(axis='both', which='major', labelsize=16)
-    # ax.tick_params(axis='both', which='minor', labelsize=8)
+    ax.grid(linestyle='--')
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
+    ax.set_yscale('log')
+    fig_Lfit.legend(loc=7, fontsize=20, frameon=False)
+    fig_Lfit.tight_layout()
+    fig_Lfit.subplots_adjust(right=0.8)  
 
-    xlim = (0.5, 5.5)
-    ylim = (10**-5, 1)
+    # ** PLOT 1/N/N vs WL and fits **
+    fig_Nfit, ax = plt.subplots()
+    
+    show_Ls = (2,3,4)
+    xlim = np.array((0, 0.002))
+    ylim = (0, 0.025)
+    # grad = {}
+    # intcpt = {}
+    for l in show_Ls:
+        xx, wl, wl_errs = zip(*[(1/pt.n/pt.n, pt.WL_data_av[l-1], pt.WL_errs[l-1]) for pt in points.values()])
+        (m, c), cov = np.polyfit(xx, wl, deg=1, w=1/np.array(wl_errs), cov='unscaled')
+        merr, cerr = np.sqrt(np.diag(cov))
+        grad = gvar.gvar(m, merr)
+        intcpt = gvar.gvar(c, cerr)
+        
+        ax.scatter(xx, wl, label=f"$L={l}$", marker=p_common.MARKERS_BY_L[l], s=70, linewidths=1, c=p_common.COLOURS_BY_L[l])
+        ax.errorbar(xx, wl, yerr=wl_errs, linestyle='none', capsize=4, linewidth=2, c=p_common.COLOURS_BY_L[l])
+    
+        yfit = xlim*grad + intcpt
+        ax.plot(xlim, gvar.mean(yfit), c=p_common.COLOURS_BY_L[l])
+        ax.fill_between(xlim, gvar.mean(yfit)-gvar.sdev(yfit), gvar.mean(yfit)+gvar.sdev(yfit), alpha=0.3, color=p_common.COLOURS_BY_L[l])#, c=COLOURS['fit'])
+
+    ax.set_xlabel("$1/N^2$", fontsize=20)
+    ax.set_ylabel("$W(L)/N$", fontsize=20)
+    ax.tick_params(axis='both', which='major', labelsize=16)
+    # ax.tick_params(axis='both', which='minor', labelsize=8)
 
     ax.grid(linestyle='--')
 
     ax.set_xlim(xlim)
     ax.set_ylim(ylim)
-    ax.set_yscale('log')
-    fig.legend(loc=7, fontsize=20, frameon=False)
-    fig.tight_layout()
-    fig.subplots_adjust(right=0.8)  
-    # figs.append(fig)
-    plt.show()
+    # ax.set_yscale('log')
+    X_TICKER_SPACING = 0.0005
+    ax.set_xticks(np.arange(xlim[0], xlim[1]+X_TICKER_SPACING, X_TICKER_SPACING))
+    fig_Nfit.legend(loc=7, fontsize=20, frameon=False)
+    fig_Nfit.tight_layout()
+    fig_Nfit.subplots_adjust(right=0.8)  
+
+    fig_Lfit.savefig(Path(p_common.SAVE_FOLDER,'T029_L_fit.pdf'))
+    fig_Nfit.savefig(Path(p_common.SAVE_FOLDER,'T029_N_fit.pdf'))
 
 
 def main():
