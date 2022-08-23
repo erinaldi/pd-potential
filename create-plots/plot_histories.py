@@ -15,8 +15,8 @@ for con_path in all_con_files:
     n = int(nstr[1:]) 
     n_t = int(sstr[1:])
     m = int(mstr[1:])
-    assert(0<t and t<1)
-    assert(0<p and p<1)
+    assert(tstr[1]=="0")
+    assert(pstr[1]=="0")
     t = float("0."+tstr[2:]) # assumes 0<T<1
     p = float("0."+pstr[2:]) # assumes 0<P<1
 
