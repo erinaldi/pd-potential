@@ -14,10 +14,10 @@ def plot_subtraction_method():
     m_n_ratio = 20/32#+0.001
     n_t = 32
     wl_type = "dec"
-    # # folder_path = "first_kind_data"
-    p16 = Point(16, 16, p, t, n_t, "dec")#, folder_path) #TODO: update
-    p24 = Point(24, 24, p, t, n_t, "dec")#, folder_path)
-    p32 = Point(32, 32, p, t, n_t, "dec")#, folder_path)
+    folder_path = "subtraction-data-files"
+    p16 = Point(16, 16, p, t, n_t, "dec", folder_path)
+    p24 = Point(24, 24, p, t, n_t, "dec", folder_path) # We don't need folder_path here, but it makes no difference
+    p32 = Point(32, 32, p, t, n_t, "dec", folder_path)
 
     p16_dec = Point(16, 10, p, t, n_t, "dec")
     p24_dec = Point(24, 15, p, t, n_t, "dec")
