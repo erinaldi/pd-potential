@@ -34,10 +34,6 @@
 
 # Output
 EK_D3N*
-products/plots/
-products/numbers/
-products/tables/
-products/plots_debug/
 
 # ipython checkpoints
 *.ipynb_checkpoints
