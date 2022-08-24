@@ -1,8 +1,3 @@
-import numpy as np
-import pandas as pd
-from pathlib import Path
-from common import Point, Points_Same_Type
-
 import plot_2D_interpolation
 import plot_P0
 import plot_subtraction_method
@@ -12,6 +7,7 @@ import plot_Wmix_plus_Wcon
 import plot_histories
 import make_WL_tables
 import make_rmvN16_fit_table
+import write_fit_values_to_tex
 
 # # TODO: this should not just be about running plots, but should also output all the data into tables too
 # # 1) get thermalisation estimates from autocorr time * 10
@@ -51,13 +47,25 @@ import make_rmvN16_fit_table
 # 4. subtraction plot - i) gather the data ii) feed into the plot iii) decide on which set of N=24 data to use...
 
 def main():
+    print("Making plots")
     plot_2D_interpolation.main()
     plot_P0.main()
     plot_subtraction_method.main()
     plot_T025.main()
     plot_why_remove_N16.main()
     plot_Wmix_plus_Wcon.main()
+
+    print("Making debug plots")
     plot_histories.main()
+
+    print("Making tables")
     make_WL_tables.main()
     make_rmvN16_fit_table.main()
-    
+
+    print("Writing TeX definitions")
+    write_fit_values_to_tex.main()
+
+    print("Done")
+
+if __name__ == "__main__":
+    main()
