@@ -15,6 +15,7 @@
 *.so
 *.dylib
 *.dll
+*.pyc
 
 # Fortran module files
 *.mod
@@ -39,3 +40,9 @@ EK_D3N*
 */*.ipynb_checkpoints
 phase-analysis/sample_rho
 phase-analysis/*.txt
+
+# Virtual environment
+env/
+
+# DS_Store
+*.DS_Store
