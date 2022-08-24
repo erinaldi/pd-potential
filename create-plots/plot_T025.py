@@ -188,6 +188,10 @@ def plot_T025():
     fig_Lfit.tight_layout()
     fig_Lfit.subplots_adjust(right=0.8)  
 
+    # write fit data to file
+    with open(Path(p_common.SAVE_NUMBERS_FOLDER, f"T025_fit_largeNonly.txt"),"w+") as f:
+        f.write(f"c={-grad}\nd={intcpt}")
+
     # ** PLOT 1/N/N vs WL and fits **
     fig_Nfit, ax = plt.subplots()
     
@@ -228,8 +232,8 @@ def plot_T025():
     fig_Nfit.tight_layout()
     fig_Nfit.subplots_adjust(right=0.8)  
 
-    fig_Lfit.savefig(Path(p_common.SAVE_FOLDER,'T029_L_fit.pdf'))
-    fig_Nfit.savefig(Path(p_common.SAVE_FOLDER,'T029_N_fit.pdf'))
+    fig_Lfit.savefig(Path(p_common.SAVE_FOLDER,'T025_L_fit.pdf'))
+    fig_Nfit.savefig(Path(p_common.SAVE_FOLDER,'T025_N_fit.pdf'))
 
 
 def main():
@@ -241,7 +245,7 @@ if __name__ == "__main__":
 
 
 # TODO:
-# 1) change so that only do interpolation once; use results of grad and intercept in same plot
 # 2) get rid of surplus code here
 # 3) ... why do decays not match well??
+#   we do not take continuum limitt
 # 4) output the numbers
