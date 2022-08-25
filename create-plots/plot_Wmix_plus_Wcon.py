@@ -59,6 +59,7 @@ def main():
     points:List[Point] = []
     w_types = ("con", "mix", "dec")
     nmp = ((24,11,0.2), (24,15,0.25), (32,15,0.2), (32,20,0.25), (64,29,0.2), (64,40,0.25)) 
+    # Ss = (16,24,32)
     Ss = (24,32)
     for i, (n, m, p) in enumerate(nmp):
         for j, s in enumerate(Ss):
