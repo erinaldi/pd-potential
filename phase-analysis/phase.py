@@ -23,7 +23,6 @@ parser.add_argument(
     "--N", type=int, default=32, help="Size of matrices/number of phases (N)"
 )
 parser.add_argument("--NT", type=int, default=16, help="Size of lattice (Nt)")
-parser.add_argument("--M", type=int, default=16, help="Size of deconfined sector (M)")
 parser.add_argument("--T", type=float, default=0.29, help="Temperature (T)")
 parser.add_argument("--P", type=float, default=0.2, help="Polyakov Loop (P)")
 parser.add_argument("--freq", type=int, default=2, help="Frequency of measurements")
@@ -38,7 +37,7 @@ args = parser.parse_args()
 
 NF = args.NF
 N = args.N
-M = args.M
+M = N  # only simulations of kind=1 are allowed
 NT = args.NT
 T = args.T
 P = args.P
