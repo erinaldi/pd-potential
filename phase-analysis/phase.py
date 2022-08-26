@@ -48,10 +48,13 @@ file_folder = f"N{N}/S{NT}/M{M}/T{str(T).replace('.','')}/P{str(P).replace('.','
 parameters = [f"k{i+1}" for i in np.arange(NF)]
 phases_file = os.path.join(data_folder, file_folder, "phase.csv")
 assert os.path.isfile(phases_file)
+out_dir = os.path.join(out_folder,file_folder,f"NF{NF}")
+os.makedirs(out_dir, exist_ok = True)
 freq = args.freq
 thermcut = args.thermcut
 
 print(f"Phases files: {phases_file}")
+print(f"Output written to: {out_dir}")
 
 
 def select_data(phases: pd.DataFrame, freq: int = 2, thermcut: int = 0) -> np.ndarray:
@@ -101,7 +104,7 @@ sampler = ultranest.ReactiveNestedSampler(
     parameters,
     log_likelihood,
     prior_transform,
-    log_dir="sample_rho",
+    log_dir=os.path.join(out_dir,"sample_rho"),
     resume="overwrite",
 )
 sampler.run(min_num_live_points=400, viz_callback=False)
@@ -128,7 +131,7 @@ fig = corner(
     title_kwargs={"fontsize": 14},
     label_kwargs={"fontsize": 16},
 )
-plt.savefig("corner.png")
+plt.savefig(os.path.join(out_dir,"corner.png"))
 
 # %%
 plt.figure(figsize=(20, 10))
@@ -151,21 +154,24 @@ band.line(color="k")
 band.shade(color="k", alpha=0.3)
 # add wider quantile (0.01 .. 0.99)
 band.shade(q=0.49, color="gray", alpha=0.2)
-plt.savefig("rho_alpha.png")
+plt.savefig(os.path.join(out_dir,"rho_alpha.png"))
 
 rhopi = np.asarray([rho[-1] / 2 for rho in band.ys])
 errs = np.diff(np.quantile(rhopi, [0.16, 0.5, 0.84]))
 print(f"Value of rho(pi) = {rhopi.mean():.5f} + {errs[1]:.5f} - {errs[0]:.5f}")
 M = N * (1.0 - 2 * np.pi * rhopi)
-errs = np.diff(np.quantile(M, [0.16, 0.5, 0.84]))
-print(f"Value of M = {errs[2]:.5f} + {errs[1]:.5f} - {errs[0]:.5f}")
+mcmc = np.percentile(M, [16, 50, 84])
+errs = np.diff(mcmc)
+print(f"Value of M = {mcmc[1]:.5f} + {errs[1]:.5f} - {errs[0]:.5f}")
 M_df = pd.DataFrame(
     data={
-        "M": errs[2],
+        "M": mcmc[1],
         "plusM": errs[1],
         "minusM": errs[0],
         "NF": NF,
         "logZ": sampler.results["logz"],
+        "logZerr": sampler.results["logzerr"],
     },
+    index=[0]
 )
-M_df.to_csv("m-values/")
+M_df.to_csv(os.path.join(out_dir,"results.csv"))
