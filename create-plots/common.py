@@ -197,6 +197,8 @@ class Points_Same_Type():
 class Points_Combine_MixCon():
     # Maybe supply pointset instead??
     def __init__(self, points_mix, points_con):
+        assert(all(pt_mix.WL_type=="mix" for pt_mix in points_mix)) # easy bug could be to mix order of arguments
+        assert(all(pt_con.WL_type=="con" for pt_con in points_con)) # easy bug could be to mix order of arguments
         self.p = points_mix[0].p
         assert(self.p!=0)
         assert(all(pt.p == self.p for pt in points_mix))
