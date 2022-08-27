@@ -34,6 +34,7 @@
 
 # Output
 EK_D3N*
+products/temp/
 
 # ipython checkpoints
 *.ipynb_checkpoints
