@@ -6,6 +6,7 @@ import plot_why_remove_N16
 import plot_Wmix_plus_Wcon
 import plot_histories
 import make_WL_tables
+import make_T025_table
 import make_rmvN16_fit_table
 import write_fit_values_to_tex
 
@@ -23,6 +24,7 @@ def main():
 
     print("Making tables")
     make_WL_tables.main()
+    make_T025_table.main()
     make_rmvN16_fit_table.main()
 
     print("Writing TeX definitions")
