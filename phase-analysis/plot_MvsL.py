@@ -39,15 +39,16 @@ N = args.N
 T = args.T
 P = args.P
 data_folder = args.data_dir
-
-all_nt = os.listdir(f"{data_folder}/N{N}/")
+data_folder = f"{data_folder}/N{N}/"
+print(f"Data folder: {data_folder}")
+all_nt = os.listdir(data_folder)
 
 df_dict = {}
 for nts in np.sort(all_nt):
-    nt = nts.split("S")[-1]
-    assert os.path.isdir(os.path.join(data_folder, f"N{N}", nts))
-    m_folder = f"{data_folder}/N{N}/S{nt}/M{N}/T{str(T).replace('.','')}/P{str(P).replace('.','')}"
-    df_dict[nt] = mvalue(m_folder)
+    if os.path.isdir(os.path.join(data_folder, nts)):
+        nt = nts.split("S")[-1]
+        m_folder = f"{data_folder}/S{nt}/M{N}/T{str(T).replace('.','')}/P{str(P).replace('.','')}"
+        df_dict[nt] = mvalue(m_folder)
 
 
 for nt,df in df_dict.items():
@@ -58,4 +59,4 @@ plt.ylabel(r"$M$",rotation=0)
 plt.legend(loc="upper left")
 plt.title(f"$N=${N} $T=${T} $P=${P}")
 plt.tight_layout()
-plt.savefig(os.path.join(data_folder, f"N{N}","MvsL.png"))
+plt.savefig(os.path.join(data_folder,f"MvsL_P{str(P).replace('.','')}.png"))
