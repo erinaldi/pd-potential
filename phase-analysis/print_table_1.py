@@ -36,7 +36,6 @@ for p in [0.2, 0.25]:
             except AttributeError:
                 pass
         j += 1
-    j = 0
     for n in [96]:
         for i, nt in enumerate([16, 24]):
             df = mvalue(n, nt, 0.29, p)
