@@ -3,7 +3,9 @@ import pandas as pd
 
 
 def mvalue(N,NT,T,P):
-    data_folder = f"./m-values/N{N}/S{NT}/M{N}/T{str(T).replace('.','')}/P{str(P).replace('.','')}"
+    T = f"{T:.2f}"  # deal with T=0.30
+    P = f"{P}"
+    data_folder = f"./m-values/N{N}/S{NT}/M{N}/T{T.replace('.','')}/P{P.replace('.','')}"
     try:
         df_2 = pd.read_csv(os.path.join(data_folder,"NF2/results.csv"), header=0,index_col=0)
         df_3 = pd.read_csv(os.path.join(data_folder,"NF3/results.csv"), header=0,index_col=0)

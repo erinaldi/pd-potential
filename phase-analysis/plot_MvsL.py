@@ -36,8 +36,8 @@ parser.add_argument(
 args = parser.parse_args()
 
 N = args.N
-T = args.T
-P = args.P
+T = f"{args.T:.2f}"  # deal with T=0.30
+P = f"{args.P}"
 data_folder = args.data_dir
 data_folder = f"{data_folder}/N{N}/"
 print(f"Data folder: {data_folder}")
@@ -47,7 +47,7 @@ df_dict = {}
 for nts in np.sort(all_nt):
     if os.path.isdir(os.path.join(data_folder, nts)):
         nt = nts.split("S")[-1]
-        m_folder = f"{data_folder}/S{nt}/M{N}/T{str(T).replace('.','')}/P{str(P).replace('.','')}"
+        m_folder = f"{data_folder}/S{nt}/M{N}/T{T.replace('.','')}/P{P.replace('.','')}"
         df_dict[nt] = mvalue(m_folder)
 
 
@@ -59,4 +59,4 @@ plt.ylabel(r"$M$",rotation=0)
 plt.legend(loc="upper left")
 plt.title(f"$N=${N} $T=${T} $P=${P}")
 plt.tight_layout()
-plt.savefig(os.path.join(data_folder,f"MvsL_P{str(P).replace('.','')}.png"))
+plt.savefig(os.path.join(data_folder,f"MvsL_P{P.replace('.','')}.png"))
