@@ -23,15 +23,15 @@ for p in [0.2, 0.25]:
                 ms = df.query("NF==3")[["M", "plusM", "minusM"]].values[0]
                 if i == 0 and j == 0:
                     print(
-                        f"{p} & {n} & {nt} & ${ms[0]:.2f}^{{+{ms[1]:.2f}}}_{{-{ms[2]:.2f}}}$"
+                        f"{p} & {n} & {nt} & ${ms[0]:.2f}^{{+{ms[1]:.2f}}}_{{-{ms[2]:.2f}}}$\\\\"
                     )
                 elif i == 0 and j > 0:
                     print(
-                        f"    & {n} & {nt} & ${ms[0]:.2f}^{{+{ms[1]:.2f}}}_{{-{ms[2]:.2f}}}$"
+                        f"    & {n} & {nt} & ${ms[0]:.2f}^{{+{ms[1]:.2f}}}_{{-{ms[2]:.2f}}}$\\\\"
                     )
                 else:
                     print(
-                        f"    &     & {nt} & ${ms[0]:.2f}^{{+{ms[1]:.2f}}}_{{-{ms[2]:.2f}}}$"
+                        f"    &     & {nt} & ${ms[0]:.2f}^{{+{ms[1]:.2f}}}_{{-{ms[2]:.2f}}}$\\\\"
                     )
             except AttributeError:
                 pass
@@ -43,15 +43,15 @@ for p in [0.2, 0.25]:
                 ms = df.query("NF==3")[["M", "plusM", "minusM"]].values[0]
                 if i == 0 and j == 0:
                     print(
-                        f"{p} & {n} & {nt} & ${ms[0]:.2f}^{{+{ms[1]:.2f}}}_{{-{ms[2]:.2f}}}$"
+                        f"{p} & {n} & {nt} & ${ms[0]:.2f}^{{+{ms[1]:.2f}}}_{{-{ms[2]:.2f}}}$\\\\"
                     )
                 elif i == 0 and j > 0:
                     print(
-                        f"    & {n} & {nt} & ${ms[0]:.2f}^{{+{ms[1]:.2f}}}_{{-{ms[2]:.2f}}}$"
+                        f"    & {n} & {nt} & ${ms[0]:.2f}^{{+{ms[1]:.2f}}}_{{-{ms[2]:.2f}}}$\\\\"
                     )
                 else:
                     print(
-                        f"    &     & {nt} & ${ms[0]:.2f}^{{+{ms[1]:.2f}}}_{{-{ms[2]:.2f}}}$"
+                        f"    &     & {nt} & ${ms[0]:.2f}^{{+{ms[1]:.2f}}}_{{-{ms[2]:.2f}}}$\\\\"
                     )
             except AttributeError:
                 pass
