@@ -52,11 +52,12 @@ for nts in np.sort(all_nt):
 
 
 for nt,df in df_dict.items():
-    plt.errorbar(df.NF,df.M,[df.minusM,df.plusM],marker='s',label=f"$n_t=${nt}")
+    if df is not None:
+        plt.errorbar(df.NF,df.M,[df.minusM,df.plusM],marker='s',label=f"$n_t=${nt}")
 plt.xticks([2,3,4,5])
 plt.xlabel(r"$\Lambda$")
 plt.ylabel(r"$M$",rotation=0)
 plt.legend(loc="upper left")
 plt.title(f"$N=${N} $T=${T} $P=${P}")
 plt.tight_layout()
-plt.savefig(os.path.join(data_folder,f"MvsL_P{P.replace('.','')}.png"))
+plt.savefig(os.path.join(data_folder,f"MvsL_T{T.replace('.','')}_P{P.replace('.','')}.png"))
