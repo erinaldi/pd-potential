@@ -22,10 +22,10 @@ for p in [0.2, 0.25]:
             df = mvalue(n, 24, t, p)
             try:
                 ms = df.query("NF==3")[["M", "plusM", "minusM"]].values[0]
-                if i == 0:
+                if i == 0 and j==0:
                     print(
                         f"{p} & {n}", end=' & ')
-                else:
+                if i>0 and j==0:
                     print(
                         f"    & {n}", end=' & ')
                 if j<2:
@@ -36,8 +36,6 @@ for p in [0.2, 0.25]:
                     print(
                         f"${ms[0]:.2f}^{{+{ms[1]:.2f}}}_{{-{ms[2]:.2f}}}$\\\\"
                     )
-                    print(
-                        f"    & {n} & ${ms[0]:.2f}^{{+{ms[1]:.2f}}}_{{-{ms[2]:.2f}}}$\\\\"
-                    )
             except AttributeError:
                 pass
+    print("\\hline")
