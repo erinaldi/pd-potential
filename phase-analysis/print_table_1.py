@@ -56,3 +56,4 @@ for p in [0.2, 0.25]:
             except AttributeError:
                 pass
         j += 1
+    print("\\hline")
