@@ -39,11 +39,12 @@ NF = args.NF
 N = args.N
 M = N  # only simulations of kind=1 are allowed
 NT = args.NT
-T = args.T
-P = args.P
+T = f"{args.T:.2f}"  # deal with T=0.30
+P = f"{args.P}"
 data_folder = args.data_dir
 out_folder = args.out_dir
-file_folder = f"N{N}/S{NT}/M{M}/T{str(T).replace('.','')}/P{str(P).replace('.','')}"
+file_folder = f"N{N}/S{NT}/M{M}/T{T.replace('.','')}/P{P.replace('.','')}"
+print(f"Looking for files in {file_folder}")
 parameters = [f"k{i+1}" for i in np.arange(NF)]
 phases_file = os.path.join(data_folder, file_folder, "phase.csv")
 assert os.path.isfile(phases_file)

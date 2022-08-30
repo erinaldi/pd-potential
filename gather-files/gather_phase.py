@@ -160,11 +160,11 @@ if __name__ == "__main__":
     N = args.N
     M = args.M
     NT = args.NT
-    T = args.T
-    P = args.P
+    T = f"{args.T:.2f}"  # deal with T=0.30
+    P = f"{args.P}"
     data_folder = args.data
     out_folder = args.out
-    run_folder = f"N{N}/S{NT}/M{M}/T{str(T).replace('.','')}/P{str(P).replace('.','')}"
+    run_folder = f"N{N}/S{NT}/M{M}/T{T.replace('.','')}/P{P.replace('.','')}"
     if args.all:
         gather_data_phase(data_folder, run_folder, out_folder, True)
     else:
