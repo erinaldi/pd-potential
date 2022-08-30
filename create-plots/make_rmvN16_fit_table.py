@@ -56,6 +56,9 @@ def main():
     c_cons_oneType_p02 = {}
     c_cons_oneType_p025= {}
 
+    c_mixs_p02 = {}
+    c_mixs_p025 = {}
+
     for rmvN in remove_Ns:
         WL_con_P020 = Points_Same_Type([pt for pt in points if pt.p==0.2 and pt.WL_type=="con" and pt.n != rmvN])
         WL_mix_P020 = Points_Same_Type([pt for pt in points if pt.p==0.2 and pt.WL_type=="mix" and pt.n != rmvN])
@@ -77,6 +80,12 @@ def main():
         c_cons_oneType_p02[rmvN] = c_con_only_p02
         c_cons_oneType_p025[rmvN] = c_con_only_p025
 
+        c_mix_p02, _ = get_fit_coeffs_SameType(WL_mix_P020)
+        c_mix_p025, _ = get_fit_coeffs_SameType(WL_mix_P025)
+
+        c_mixs_p02[rmvN] = c_mix_p02
+        c_mixs_p025[rmvN] = c_mix_p025
+
     header = ["P"] + [f"rmv. $N={rmvN}$" if rmvN is not None else "all $N$" for rmvN in remove_Ns]
     with open(Path("products", "tables", "c_con_plus_mix_removeN.csv"), "w+") as f:
         writer = csv.writer(f)
@@ -95,8 +104,14 @@ def main():
         writer.writerow(p02_line)
         writer.writerow(p025_line)
 
-
-
+    header = ["P"] + [f"rmv. $N={rmvN}$" if rmvN is not None else "all $N$" for rmvN in remove_Ns]
+    with open(Path("products", "tables", "c_mix_removeN.csv"), "w+") as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
+        p02_line = ["$0.2$"] + [c_mixs_p02[rmvN] for rmvN in remove_Ns]
+        p025_line = ["$0.25$"] + [c_mixs_p025[rmvN] for rmvN in remove_Ns]
+        writer.writerow(p02_line)
+        writer.writerow(p025_line)
 
 
 
@@ -122,6 +137,9 @@ def main():
     c_cons_oneType_p02 = {}
     c_cons_oneType_p025= {}
 
+    c_mixs_p02 = {}
+    c_mixs_p025 = {}
+
     for rmvN in remove_Ns:
         WL_con_P020 = Points_Same_Type([pt for pt in points if pt.p==0.2 and pt.WL_type=="con" and pt.n != rmvN])
         WL_mix_P020 = Points_Same_Type([pt for pt in points if pt.p==0.2 and pt.WL_type=="mix" and pt.n != rmvN])
@@ -143,6 +161,12 @@ def main():
         c_cons_oneType_p02[rmvN] = c_con_only_p02
         c_cons_oneType_p025[rmvN] = c_con_only_p025
 
+        c_mix_p02, _ = get_fit_coeffs_SameType(WL_mix_P020)
+        c_mix_p025, _ = get_fit_coeffs_SameType(WL_mix_P025)
+
+        c_mixs_p02[rmvN] = c_mix_p02
+        c_mixs_p025[rmvN] = c_mix_p025
+
     header = ["P"] + [f"rmv. $N={rmvN}$" if rmvN is not None else "all $N$" for rmvN in remove_Ns]
     with open(Path("products", "tables", "c_con_plus_mix_removeN_removed_nt16.csv"), "w+") as f:
         writer = csv.writer(f)
@@ -161,9 +185,14 @@ def main():
         writer.writerow(p02_line)
         writer.writerow(p025_line)
 
-
-
-
+    header = ["P"] + [f"rmv. $N={rmvN}$" if rmvN is not None else "all $N$" for rmvN in remove_Ns]
+    with open(Path("products", "tables", "c_mix_removeN_removed_nt16.csv"), "w+") as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
+        p02_line = ["$0.2$"] + [c_mixs_p02[rmvN] for rmvN in remove_Ns]
+        p025_line = ["$0.25$"] + [c_mixs_p025[rmvN] for rmvN in remove_Ns]
+        writer.writerow(p02_line)
+        writer.writerow(p025_line)
 
 if __name__ == "__main__":
     main()
