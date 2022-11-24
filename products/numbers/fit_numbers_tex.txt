@@ -6,11 +6,11 @@
 \newcommand\dMixPpointTwo{-0.076(24)}
 \newcommand\cConPlusMixPpointTwo{1.733(19)}
 \newcommand\dConPlusMixPpointTwo{0.021(22)}
-\newcommand\cConPpointTwoFive{1.730(27)}
-\newcommand\dConPpointTwoFive{0.178(34)}
-\newcommand\cMixPpointTwoFive{1.715(24)}
-\newcommand\dMixPpointTwoFive{-0.111(28)}
-\newcommand\cConPlusMixPpointTwoFive{1.722(22)}
-\newcommand\dConPlusMixPpointTwoFive{0.008(25)}
+\newcommand\cConPpointTwoFive{1.724(23)}
+\newcommand\dConPpointTwoFive{0.127(28)}
+\newcommand\cMixPpointTwoFive{1.708(20)}
+\newcommand\dMixPpointTwoFive{-0.109(23)}
+\newcommand\cConPlusMixPpointTwoFive{1.718(18)}
+\newcommand\dConPlusMixPpointTwoFive{-0.006(21)}
 \newcommand\cTZeroTwoFive{2.0887(30)}
 \newcommand\dTZeroTwoFive{0.0011(31)}
