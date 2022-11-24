@@ -2,7 +2,6 @@
 
 Code and data used in the publication _Linear confinement in the partially-deconfined phase_ ([arxiv:2208.14402](https://arxiv.org/abs/2208.14402)) by Gautam, Hanada, Holden, and Rinaldi. 
 
-
 ## Simulation code
 
 The Fortran `F90` code, based on LAPACK, is in the `simulation-code` folder.
@@ -17,6 +16,10 @@ The sub-folder `m-values` include the results of the analysis.
 
 The raw data for the correlator analysis is in the `data-files` folder.
 These files are collected from the simulation outputs using the scripts in the `gather-files` folder, and analyzed with the `create-plots` scripts (with output saved in the `products` folder).
+
+## Python package dependencies
+
+Package dependencies for the Python analysis scripts are contained in `requirements.txt`
 
 ## Cite
 
